@@ -38,14 +38,15 @@ jobs:
             dart compile exe ./bin/main.dart -o ./build/test_dart
           fi
         shell: bash
+      
+      - name: Zip artifact Windows
+        if: matrix.os == 'windows-latest'
+        run: Compress-Archive -Path ./build/* -DestinationPath ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip
+        shell: pwsh
 
-      - name: Zip Artifact
-        run: |
-          if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            Compress-Archive -Path ./build/* -DestinationPath ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip
-          elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            zip -r ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip ./build
-          fi
+      - name: Zip artifact Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: zip -r ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip ./build
         shell: bash
 
       - name: Upload artifact
