@@ -29,6 +29,17 @@ jobs:
 
       - name: Install dependencies
         run: dart pub get
+      
+
+      - name: Make Build Directory Windows
+        if: matrix.os == 'windows-latest'
+        run: mkdir build
+        shell: pwsh
+
+      - name: Make Build Directory Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: mkdir build
+        shell: bash
 
       - name: Build Application
         run: |
@@ -41,12 +52,12 @@ jobs:
       
       - name: Zip artifact Windows
         if: matrix.os == 'windows-latest'
-        run: mkdir build && Compress-Archive -Path ./build/* -DestinationPath ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip
+        run: Compress-Archive -Path ./build/* -DestinationPath ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip
         shell: pwsh
 
       - name: Zip artifact Linux
         if: matrix.os == 'ubuntu-latest'
-        run: mkdir build && zip -r ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip ./build
+        run: zip -r ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip ./build
         shell: bash
 
       - name: Upload artifact
