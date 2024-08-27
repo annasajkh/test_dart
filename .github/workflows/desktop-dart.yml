@@ -31,12 +31,13 @@ jobs:
       - name: Install dependencies
         run: dart pub get
 
+
       - name: Build Application
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            dart compile exe ./scripts/main.dart -o ./build/test_dart.exe
+            build.bat
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            dart compile exe ./scripts/main.dart -o ./build/test_dart
+            build.sh
           fi
         shell: bash
       
