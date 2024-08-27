@@ -22,6 +22,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - uses: dart-lang/setup-dart@v1
 
       - name: Install dependencies
@@ -30,7 +33,7 @@ jobs:
       - name: Build Application
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
-            dart compile exe .\bin\main.dart -o .\build\test_dart.exe
+            dart compile exe ./bin/main.dart -o ./build/test_dart.exe
           elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
             dart compile exe ./bin/main.dart -o ./build/test_dart
           fi
