@@ -31,7 +31,6 @@ jobs:
       - name: Install dependencies
         run: dart pub get
 
-
       - name: Build Application
         run: |
           if [ "${{ matrix.os }}" == "windows-latest" ]; then
