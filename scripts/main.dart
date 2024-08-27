@@ -11,7 +11,7 @@ void main() {
     beginDrawing();
     clearBackground(Color.black);
 
-    drawRectangle(100, 100, 100, 100, Color.red);
+    drawRectangle(200, 100, 100, 100, Color.red);
 
     endDrawing();
   }
