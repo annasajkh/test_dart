@@ -1,0 +1,84 @@
+name: Publish Dart Desktop App
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - "v*"
+  pull_request:
+    branches: [ "main" ]
+permissions:
+  contents: write
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            platform: win
+            arch: x64
+          - os: ubuntu-latest
+            platform: linux
+            arch: x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Publish Windows
+        if: matrix.os == 'windows-latest'
+        run: dart compile exe .\bin\main.dart -o .\build\test_dart.exe
+        shell: pwsh
+      
+      - name: Publish Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: dart compile exe .\bin\main.dart -o .\build\test_dart
+        shell: bash
+      
+      - name: Zip artifact Windows
+        if: matrix.os == 'windows-latest'
+        run: Compress-Archive -Path ./build/* -DestinationPath ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip
+        shell: pwsh
+      
+      - name: Zip artifact Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: zip -r ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip ./build
+        shell: bash
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.platform }}-${{ matrix.arch }}
+          path: ./test_dart_${{ matrix.platform }}_${{ matrix.arch }}.zip
+
+  create-release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+    - name: Validate artifacts
+      run: |
+        for file in ./*/*.zip; do
+          if ! unzip -t "$file" > /dev/null; then
+            echo "Error: $file is not a valid zip file"
+            exit 1
+          fi
+        done
+    - name: Create Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        assets=""
+        for file in ./*/*.zip; do
+          assets="$assets $file"
+        done
+        gh release create ${{ github.ref_name }} \
+          --title "Release ${{ github.ref_name }}" \
+          --generate-notes \
+          $assets
