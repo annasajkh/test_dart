@@ -1,5 +1,5 @@
 # Test Dart
-Testing dart name is snakecase because dart is picky with names
+Testing dart
 
 # Things i don't like about the language
 - Very opinionated compiler
