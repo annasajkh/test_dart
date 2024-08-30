@@ -6,10 +6,8 @@ typedef Color = raylib.Color;
 Game game = Game();
 
 void main() {
-  raylib.initLibrary(
-      linux: 'natives/linux_x64/raylib.so',
-      windows: "natives/windows_x64/raylib.dll");
-
+  raylib.initLibrary(linux: 'natives/linux_x64/raylib.so', windows: "natives/windows_x64/raylib.dll");
+  
   game.load();
 
   raylib.initWindow(960, 540, "Test Dart");

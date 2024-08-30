@@ -9,7 +9,7 @@ class Game {
   Player player = Player(Vector2(100, 100), 0);
 
   void load() {
-    
+    print(player.Position);
   }
 
   void update(double delta) {
