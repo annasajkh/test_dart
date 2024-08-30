@@ -1,5 +1,5 @@
 # Test Dart
-Testing dart
+Trying dart
 
 # Personally what i didn't like about the language right now
 - Very opinionated compiler
