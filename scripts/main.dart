@@ -1,20 +1,30 @@
-import 'package:raylib/raylib.dart';
+import 'package:raylib/raylib.dart' as raylib;
+import 'core/Game.dart';
+
+typedef Color = raylib.Color;
+
+Game game = Game();
 
 void main() {
-  initLibrary(
+  raylib.initLibrary(
       linux: 'natives/linux_x64/raylib.so',
       windows: "natives/windows_x64/raylib.dll");
 
-  initWindow(960, 540, "Test Dart");
+  game.load();
 
-  while (!windowShouldClose()) {
-    beginDrawing();
-    clearBackground(Color.black);
+  raylib.initWindow(960, 540, "Test Dart");
 
-    drawRectangle(300, 100, 100, 100, Color.red);
+  while (!raylib.windowShouldClose()) {
+    game.update(raylib.getFrameTime());
 
-    endDrawing();
+    raylib.beginDrawing();
+    raylib.clearBackground(Color.black);
+
+    game.draw();
+
+    raylib.endDrawing();
   }
 
-  closeWindow();
+  game.unload();
+  raylib.closeWindow();
 }
